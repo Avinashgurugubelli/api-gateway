@@ -1,9 +1,11 @@
 package com.ajt.apiGateway.jwt;
 
+import com.ajt.apiGateway.exception.ApiException;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,7 +25,7 @@ public class JwtUtil {
 			Claims body = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
 			return body;
 		} catch (Exception e) {
-			logger.error( e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -33,16 +35,17 @@ public class JwtUtil {
 			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
 			return true;
 		} catch (SignatureException e) {
-			logger.error("Invalid JWT signature: {}", e.getMessage());
+			throw new ApiException("Invalid JWT signature: " + e.getMessage(), HttpStatus.BAD_REQUEST, null);
 		} catch (MalformedJwtException e) {
-			logger.error("Invalid JWT token: {}", e.getMessage());
+			throw new ApiException("Invalid JWT token: " + e.getMessage(), HttpStatus.BAD_REQUEST, null);
 		} catch (ExpiredJwtException e) {
-			logger.error("JWT token is expired: {}", e.getMessage());
+			throw new ApiException("JWT token is expired: " + e.getMessage(), HttpStatus.UNAUTHORIZED, null);
 		} catch (UnsupportedJwtException e) {
-			logger.error("JWT token is unsupported: {}", e.getMessage());
+			throw new ApiException("JWT token is unsupported: " + e.getMessage(), HttpStatus.BAD_REQUEST, null);
 		} catch (IllegalArgumentException e) {
-			logger.error("JWT claims string is empty: {}", e.getMessage());
+			throw new ApiException("JWT claims string is empty: " + e.getMessage(), HttpStatus.BAD_REQUEST, null);
+		} catch (Exception e) {
+			throw new ApiException("Some error occurred while validating JWT token: " + e.getMessage(), HttpStatus.BAD_REQUEST, null);
 		}
-		return false;
 	}
 }

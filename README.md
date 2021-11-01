@@ -14,6 +14,7 @@ The following guides illustrate how to use some features concretely:
 
 ### References
 https://roytuts.com/spring-cloud-gateway-security-with-jwt-json-web-token/
+https://www.baeldung.com/spring-cloud-securing-services
 
 ### Frequently asked questions?
 1) How to control the direct access to microservices? in other words: Don't allow direct calls to Microservices. Only allow through API Gateway.

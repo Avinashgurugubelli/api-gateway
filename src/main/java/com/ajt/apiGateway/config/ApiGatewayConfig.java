@@ -18,6 +18,9 @@ public class ApiGatewayConfig {
 	@Bean
 	public RouteLocator routes(RouteLocatorBuilder builder) {
 		// Note: uri value: i am using EUREKA load balancing instead of host and port to access the microservices, The name can be identified from eureka dashboard (Instance -> application)
-		return builder.routes().route("auth", r -> r.path("/api/auth/**").filters(f -> f.filter(filter)).uri("lb://AUTHSERVICE")).build();
+		return builder.routes()
+				.route("auth", r -> r.path("/api/auth/**").filters(f -> f.filter(filter)).uri("lb://AUTHSERVICE"))
+				.route("employeeService", r -> r.path("/api/ems/**").filters(f -> f.filter(filter)).uri("lb://EMPLOYEEMANAGEMENTSERVICE")
+				).build();
 	}
 }
